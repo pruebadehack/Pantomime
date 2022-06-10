@@ -37,17 +37,21 @@ open class ManifestBuilder {
                 } else if line.hasPrefix("#EXT-X-STREAM-INF") {
                     // #EXT-X-STREAM-INF:PROGRAM-ID=1, BANDWIDTH=200000
                     currentMediaPlaylist = MediaPlaylist()
-                    do {
-                        let programIdString = try line.replace("(.*)=(\\d+),(.*)", replacement: "$2")
-                        let bandwidthString = try line.replace("(.*),(.*)=(\\d+)(.*)", replacement: "$3")
-                        if let currentMediaPlaylistExist = currentMediaPlaylist {
-                            currentMediaPlaylistExist.programId = Int(programIdString)!
-                            currentMediaPlaylistExist.bandwidth = Int(bandwidthString)!
+                    if let mediaPlaylist = currentMediaPlaylist {
+                        do {
+                            let params = line.split(separator: ",")
+                            
+                            if let index = params.firstIndex(where: { $0.trimmingCharacters(in: .whitespaces).hasPrefix("BANDWIDTH")}), let val = params[index].split(separator: "=").last {
+                                mediaPlaylist.bandwidth = Int(val)!
+                            }
+                            
+                            let programIdString = try line.replace("(.*)=(\\d+),(.*)", replacement: "$2")
+                            mediaPlaylist.programId = Int(programIdString)!
+                            
+                        } catch {
+                            print("Failed to parse program-id and bandwidth on master playlist. Line = \(line)")
                         }
-                    } catch {
-                        print("Failed to parse program-id and bandwidth on master playlist. Line = \(line)")
                     }
-
                 }
             } else if line.hasPrefix("#") {
                 // Comments are ignored
