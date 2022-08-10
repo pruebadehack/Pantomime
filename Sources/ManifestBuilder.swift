@@ -39,6 +39,8 @@ open class ManifestBuilder {
                     // #EXT-X-STREAM-INF:PROGRAM-ID=1, BANDWIDTH=200000
                     if let type = parseLine(line, attribute: "TYPE"), let mediaType = MediaType(rawValue: type) {
                         currentMediaPlaylist = MediaPlaylist(type: mediaType)
+                    } else {
+                        currentMediaPlaylist = MediaPlaylist(type: "VIDEO")
                     }
                     if let mediaPlaylist = currentMediaPlaylist {
                         do {
