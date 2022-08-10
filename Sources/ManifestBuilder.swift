@@ -40,7 +40,7 @@ open class ManifestBuilder {
                     if let type = parseLine(line, attribute: "TYPE"), let mediaType = MediaType(rawValue: type) {
                         currentMediaPlaylist = MediaPlaylist(type: mediaType)
                     } else {
-                        currentMediaPlaylist = MediaPlaylist(type: "VIDEO")
+                        currentMediaPlaylist = MediaPlaylist(type: .video)
                     }
                     if let mediaPlaylist = currentMediaPlaylist {
                         do {
